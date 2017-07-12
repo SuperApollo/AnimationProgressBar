@@ -28,8 +28,8 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
     private float mTextSize;
     private int mStrokeColor;
     private int mContentColor;
-    private float mRadius;
-    private float mRectWidth;
+    private int mRadius;
+    private int rectWidth;
     private float mContentPaddingLR;
     private float mContentPaddingTB;
     private float mProgressWidth;
@@ -63,14 +63,14 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
     private int bottom;
     private RectF mProgressRect;
     private int mProgressStartAngel;
-    private int circleSweep;
+    private float circleSweep;
 
     public LoadingButton(Context context) {
         this(context, null);
     }
 
     public LoadingButton(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, -1);
+        this(context, attrs, 0);
     }
 
     public LoadingButton(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -86,12 +86,20 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
         this.mLoadLisener = mLoadLisener;
     }
 
-    public int getCircleSweep() {
-        return circleSweep;
+
+    /**
+     * 以下两个方法必须有，并且参数float和int要对应好，否则动画出不来
+     *
+     * @param circleSweep
+     */
+    public void setCircleSweep(float circleSweep) {
+        this.circleSweep = circleSweep;
+        invalidateSelf();
     }
 
-    public void setCircleSweep(int circleSweep) {
-        this.circleSweep = circleSweep;
+    public void setRectWidth(int width) {
+        rectWidth = width;
+        invalidateSelf();
     }
 
     @Override
@@ -137,15 +145,14 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
         //初始化属性
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.LoadingButton);
         mText = typedArray.getString(R.styleable.LoadingButton_android_text);
-        mTextSize = typedArray.getDimension(R.styleable.LoadingButton_android_textSize, 18);
+        mTextSize = typedArray.getDimensionPixelSize(R.styleable.LoadingButton_android_textSize, mDefaultTextSize);
         mTextColor = typedArray.getColor(R.styleable.LoadingButton_textColor, Color.WHITE);
-        mStrokeColor = typedArray.getColor(R.styleable.LoadingButton_strokeColor, 0xffffff);
-        mContentColor = typedArray.getColor(R.styleable.LoadingButton_contentColor, 0xffffff);
-        mRadius = typedArray.getDimension(R.styleable.LoadingButton_radius, 20);
-        mRectWidth = typedArray.getDimension(R.styleable.LoadingButton_rectWidth, 20);
-        mContentPaddingLR = typedArray.getDimension(R.styleable.LoadingButton_contentPaddingLR, 10);
-        mContentPaddingTB = typedArray.getDimension(R.styleable.LoadingButton_contentPaddingTB, 10);
-        mProgressWidth = typedArray.getDimension(R.styleable.LoadingButton_progressedWidth, 2);
+        mStrokeColor = typedArray.getColor(R.styleable.LoadingButton_strokeColor, Color.RED);
+        mContentColor = typedArray.getColor(R.styleable.LoadingButton_contentColor, Color.WHITE);
+        mRadius = typedArray.getDimensionPixelOffset(R.styleable.LoadingButton_radius, mDefaultRadius);
+        mContentPaddingLR = typedArray.getDimensionPixelOffset(R.styleable.LoadingButton_contentPaddingLR, 10);
+        mContentPaddingTB = typedArray.getDimensionPixelOffset(R.styleable.LoadingButton_contentPaddingTB, 10);
+        mProgressWidth = typedArray.getDimensionPixelOffset(R.styleable.LoadingButton_progressedWidth, 2);
         mBackgroundColor = typedArray.getColor(R.styleable.LoadingButton_backgroundColor, Color.WHITE);
         mProgressColor = typedArray.getColor(R.styleable.LoadingButton_progressColor, Color.WHITE);
         mProgressSecond_color = typedArray.getColor(R.styleable.LoadingButton_progressSecond_color, Color.parseColor("#c3c3c3"));
@@ -169,7 +176,7 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
         mTextpaint.setTextAlign(Paint.Align.CENTER);
 
         //中间矩形宽度
-        mRectWidth = mDefaultWidth - mDefaultRadius * 2;
+        rectWidth = mDefaultWidth - mDefaultRadius * 2;
 
         //左侧半圆
         mLeftRect = new RectF();
@@ -233,7 +240,7 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
 
     public void shrink() {
         if (mShrinkAnim == null) {
-            mShrinkAnim = ObjectAnimator.ofFloat(this, "mRectWidth", mRectWidth, 0);
+            mShrinkAnim = ObjectAnimator.ofInt(this, "rectWidth", rectWidth, 0);
         }
         mShrinkAnim.addListener(this);
         mShrinkAnim.setDuration(500);
@@ -243,7 +250,7 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
 
     public void load() {
         if (mLoadAnimator == null) {
-            mLoadAnimator = ObjectAnimator.ofFloat(this, "circleSweep", 0, 360);
+            mLoadAnimator = ObjectAnimator.ofFloat(this, "circleSweep", 0f, 360);
         }
         mLoadAnimator.setDuration(1000);
         mLoadAnimator.setRepeatMode(ValueAnimator.RESTART);
@@ -311,7 +318,7 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
 
     public void reset() {
         mCurrentState = State.INITIAL;
-        mRectWidth = getWidth() - mRadius * 2;
+        rectWidth = getWidth() - mRadius * 2;
         isUnfold = true;
         cancelAnimation();
         invalidateSelf();
@@ -343,11 +350,11 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
             resultH = contentH < heightSize ? contentH : heightSize;
         }
 
-        resultW = resultW < mRadius * 2 ? (int) (mRadius * 2) : resultW;
-        resultH = resultH < mRadius * 2 ? (int) (mRadius * 2) : resultH;
+        resultW = resultW < mRadius * 2 ? (mRadius * 2) : resultW;
+        resultH = resultH < mRadius * 2 ? (mRadius * 2) : resultH;
 
         mRadius = resultH / 2;
-        mRectWidth = resultW - mRadius * 2;
+        rectWidth = resultW - mRadius * 2;
         setMeasuredDimension(resultW, resultH);
 
 
@@ -367,7 +374,7 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
         int textAscent = (int) mTextpaint.getFontMetrics().ascent;
         int delta = Math.abs(textAscent) - textDescent;
 
-        int circleR = (int) (mRadius / 2);
+        int circleR = mRadius / 2;
         //画文字
         if (mCurrentState == State.INITIAL) {
             canvas.drawText(mText, cx, cy + delta / 2, mTextpaint);
@@ -380,8 +387,8 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
             canvas.drawCircle(cx, cy, circleR, mPaint);
             mPaint.setColor(mProgressColor);
             if (circleSweep != 360) {
-                mProgressStartAngel = progressReverse ? 270 : 270 + circleSweep;
-                canvas.drawArc(mProgressRect, mProgressStartAngel, progressReverse ? 270 : 360 - circleSweep, false, mPaint);
+                mProgressStartAngel = progressReverse ? 270 : (int) (270 + circleSweep);
+                canvas.drawArc(mProgressRect, mProgressStartAngel, progressReverse ? circleSweep : (int) (360 - circleSweep), false, mPaint);
             }
             mPaint.setColor(mBackgroundColor);
 
@@ -405,19 +412,19 @@ public class LoadingButton extends View implements Animator.AnimatorListener {
         }
         mPath.reset();
 
-        left = (int) (cx - mRectWidth / 2 - mRadius);
+        left = cx - rectWidth / 2 - mRadius;
         top = 0;
-        right = (int) (cx + mRectWidth / 2 + mRadius);
+        right = cx + rectWidth / 2 + mRadius;
         bottom = getHeight();
 
         mLeftRect.set(left, top, left + mRadius * 2, bottom);
         mRightRect.set(right - mRadius * 2, top, right, bottom);
-        mContentRect.set(cx - mRectWidth / 2, top, cx + mRectWidth / 2, bottom);
+        mContentRect.set(cx - rectWidth / 2, top, cx + rectWidth / 2, bottom);
 
-        mPath.moveTo(cx - mRectWidth / 2, bottom);//左下
-        mPath.arcTo(mLeftRect, 90f, 180f);//左上
-        mPath.lineTo(cx + mRectWidth / 2, top);//右上
-        mPath.arcTo(mRightRect, 270f, 180f);//右下
+        mPath.moveTo(cx - rectWidth / 2, bottom);//左下
+        mPath.arcTo(mLeftRect, 90.0f, 180f);//左上
+        mPath.lineTo(cx + rectWidth / 2, top);//右上
+        mPath.arcTo(mRightRect, 270.0f, 180f);//右下
         mPath.close();//闭合
 
         mPaint.setStyle(Paint.Style.FILL);
