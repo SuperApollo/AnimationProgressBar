@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
     tools:context="com.apollo.animationprogressbar.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!--<com.apollo.animationprogressba.AnimationProgressBar-->
+        <!--android:id="@+id/pb_frame"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:animMode="ANIM_FRAME"-->
+        <!--app:drawable="@drawable/test_shape"-->
+        <!--app:drawableHeightOffset="0dp"-->
+        <!--app:gradientEndColor="#ffff00"-->
+        <!--app:gradientStartColor="#ff0000"-->
+        <!--app:isGradient="true"-->
+        <!--app:isSetBar="true"-->
+        <!--app:max="1000"-->
+        <!--app:progressHeight="10dp"-->
+        <!--app:progressHeightOffset="15dp"-->
+        <!--app:refreshTime="100"-->
+        <!--app:rotateRate="30"-->
+        <!--app:scaleMax="1.8"-->
+        <!--app:scaleMin="0.5" />-->
 
-</android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="开始" />
+
+</LinearLayout>

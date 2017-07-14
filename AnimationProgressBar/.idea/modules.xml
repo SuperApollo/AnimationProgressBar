@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AnimationProgressBar.iml" filepath="$PROJECT_DIR$/AnimationProgressBar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/animationprogressbar/animationprogressbar.iml" filepath="$PROJECT_DIR$/animationprogressbar/animationprogressbar.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
